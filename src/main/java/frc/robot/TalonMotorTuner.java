@@ -17,7 +17,9 @@ public class TalonMotorTuner extends DogLog{
      */
     //this returns true if in test mode
     private static BooleanSupplier isTestMode = () -> DriverStation.isTest();
-
+    /*
+     * Publishes values for tuning PID via DogLog
+     */
     public static void tunablePID(String motorName, TalonFX motor, Slot0Configs defaultConfigs){
         if(isTestMode.getAsBoolean()){
             TalonFXConfigurator motorConfigurator = motor.getConfigurator();
@@ -33,7 +35,9 @@ public class TalonMotorTuner extends DogLog{
         }
         
     }
-
+    /*
+     * Publishes values for tuning PID and Feedforward using DogLog
+     */
     public static void tunablePIDFeedforward(String motorName, TalonFX motor, Slot0Configs defaultConfigs){
         if(isTestMode.getAsBoolean()){
             TalonMotorTuner.tunablePID(motorName, motor, defaultConfigs);
