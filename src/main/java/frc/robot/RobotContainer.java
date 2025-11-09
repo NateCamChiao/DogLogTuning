@@ -9,17 +9,17 @@ import com.fasterxml.jackson.databind.util.StdDateFormat;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.ExampleSubsystem;
 
 public class RobotContainer {
-    private Intake intake = new Intake();
+    private ExampleSubsystem subsystem = new ExampleSubsystem();
     public RobotContainer() {
         configureBindings();
     }
 
     private void configureBindings() {}
-
+    //call all subsystem tuneMotors methods through RobotContainer
     public void tuneMotors(){
-        intake.tuneMotors();
+        subsystem.tuneMotors();
     }
 }

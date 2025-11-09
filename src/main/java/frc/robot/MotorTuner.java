@@ -10,7 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation;
 
-public class TalonMotorTuner extends DogLog{
+public class MotorTuner extends DogLog{
     /*
      * Use a boolean supplier to check if in test mode
      * otherwise don't allow tuning
@@ -21,6 +21,7 @@ public class TalonMotorTuner extends DogLog{
      * Publishes values for tuning PID via DogLog
      */
     public static void tunablePID(String motorName, TalonFX motor, Slot0Configs defaultConfigs){
+        // This make sure we are in test mode before chaning values
         if(isTestMode.getAsBoolean()){
             TalonFXConfigurator motorConfigurator = motor.getConfigurator();
             DogLog.tunable(motorName + "kP", defaultConfigs.kP, updatedValue -> {
@@ -40,7 +41,7 @@ public class TalonMotorTuner extends DogLog{
      */
     public static void tunablePIDFeedforward(String motorName, TalonFX motor, Slot0Configs defaultConfigs){
         if(isTestMode.getAsBoolean()){
-            TalonMotorTuner.tunablePID(motorName, motor, defaultConfigs);
+            MotorTuner.tunablePID(motorName, motor, defaultConfigs);
 
             TalonFXConfigurator motorConfigurator = motor.getConfigurator();
             DogLog.tunable(motorName + "kG", defaultConfigs.kP, updatedValue -> {
@@ -57,4 +58,6 @@ public class TalonMotorTuner extends DogLog{
             });
         }
     }
+
+    
 }

@@ -54,6 +54,7 @@ public class Robot extends TimedRobot {
     @Override
     public void testInit() {
       CommandScheduler.getInstance().cancelAll();
+      //this is needed for motor tuning to get called
       m_robotContainer.tuneMotors();
     }
 
