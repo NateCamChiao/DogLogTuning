@@ -18,7 +18,7 @@ public class ExampleSubsystem extends SubsystemBase{
     }
 
     public void tuneMotors(){
-        MotorTuner.tunablePID("Intake motor", intakeMotor, new Slot0Configs());
-        MotorTuner.tunablePIDFeedforward("Intake Arm Motor", armMotor, new Slot0Configs());
+        MotorTuner.Talon.tunablePID("Intake motor", intakeMotor, new Slot0Configs());
+        MotorTuner.Talon.tunablePIDFeedforward("Intake Arm Motor", armMotor, new Slot0Configs());
     }
 }
