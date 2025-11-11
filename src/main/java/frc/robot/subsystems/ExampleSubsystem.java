@@ -25,7 +25,7 @@ public class ExampleSubsystem extends SubsystemBase{
         MotorTuner.TalonMotor.tunablePID("Intake motor", intakeMotor, new Slot0Configs());
         MotorTuner.TalonMotor.tunablePIDFeedforward("Intake Arm Motor", armMotor, new Slot0Configs());
         //SparkMax example
-        MotorTuner.SparkMotor.tunablePIDF("Spark Max motor", sparkMaxMotor);
+        MotorTuner.SparkMaxMotor.tunablePIDF("Spark Max motor", sparkMaxMotor);
         //Native controller examples
         MotorTuner.NativeController.tunablePID("Native PID", nativePIDController);
         MotorTuner.NativeController.tunablePID("Native ProfiledPID", profiledPIDController);
