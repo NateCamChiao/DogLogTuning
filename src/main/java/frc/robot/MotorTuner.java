@@ -28,7 +28,7 @@ public class MotorTuner extends DogLog{
     private static BooleanSupplier isTestMode = () -> DriverStation.isTest();
 
     // class for TalonFX motor controllers
-    public static class Talon {
+    public static class TalonMotor {
         public static void tunablePID(String motorName, TalonFX motor, Slot0Configs defaultConfigs){
             // This make sure we are in test mode before chaning values
             if(isTestMode.getAsBoolean()){
@@ -50,7 +50,7 @@ public class MotorTuner extends DogLog{
          */
         public static void tunablePIDFeedforward(String motorName, TalonFX motor, Slot0Configs defaultConfigs){
             if(isTestMode.getAsBoolean()){
-                Talon.tunablePID(motorName, motor, defaultConfigs);
+                TalonMotor.tunablePID(motorName, motor, defaultConfigs);
     
                 TalonFXConfigurator motorConfigurator = motor.getConfigurator();
                 DogLog.tunable(motorName + " kG", defaultConfigs.kP, updatedValue -> {
@@ -69,7 +69,12 @@ public class MotorTuner extends DogLog{
         }
     }
     public static class SparkMotor{
-        public static void tunablePIDFeedForward(String motorName, SparkMax motor){
+        /*
+         * This is a PID with a feedforward value
+         * RevLib only offers one feedforward value
+         * (Use the feedforward for static friction or gravity)
+         */
+        public static void tunablePIDF(String motorName, SparkMax motor){
             if(isTestMode.getAsBoolean()){
                 ClosedLoopConfigAccessor closedLoopAccessor = motor.configAccessor.closedLoop;
                 ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig();
