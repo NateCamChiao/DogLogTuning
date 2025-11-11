@@ -53,7 +53,10 @@ public class Robot extends TimedRobot {
     @Override
     public void testInit() {
       CommandScheduler.getInstance().cancelAll();
-      //this is needed for motor tuning to get called
+      /*
+       * Use the testInit to isolate tuning to test mode
+       * This will help prevent PID and Feedforward controller from chaning during teleop or auto
+       */
       m_robotContainer.tuneMotors();
     }
 

@@ -98,7 +98,6 @@ public class MotorTuner extends DogLog{
                     );
                     motor.configure(baseConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
                 });
-
                 DogLog.tunable(motorName + " kV", closedLoopAccessor.getFF(), updatedValue -> {
                     baseConfig.apply(
                         closedLoopConfig.velocityFF(updatedValue)
@@ -120,7 +119,7 @@ public class MotorTuner extends DogLog{
             }
         }
         /*
-         * Overloaded method to accept ProfiledPIDController aswell
+         * Overloaded method to accept ProfiledPIDController
          */
         public static void tunablePID(String motorName, ProfiledPIDController controller){
             if(isTestMode.getAsBoolean()){
