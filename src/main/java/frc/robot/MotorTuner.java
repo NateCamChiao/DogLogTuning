@@ -14,6 +14,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 /*
  * Publishes values for tuning PID via DogLog
@@ -32,13 +33,13 @@ public class MotorTuner extends DogLog{
             // This make sure we are in test mode before chaning values
             if(isTestMode.getAsBoolean()){
                 TalonFXConfigurator motorConfigurator = motor.getConfigurator();
-                DogLog.tunable(motorName + "kP", defaultConfigs.kP, updatedValue -> {
+                DogLog.tunable(motorName + " kP", defaultConfigs.kP, updatedValue -> {
                     motorConfigurator.apply(defaultConfigs.withKP(updatedValue));
                 });
-                DogLog.tunable(motorName + "kI", defaultConfigs.kI, updatedValue -> {
+                DogLog.tunable(motorName + " kI", defaultConfigs.kI, updatedValue -> {
                     motorConfigurator.apply(defaultConfigs.withKI(updatedValue));
                 });
-                DogLog.tunable(motorName + "kD", defaultConfigs.kD, updatedValue -> {
+                DogLog.tunable(motorName + " kD", defaultConfigs.kD, updatedValue -> {
                     motorConfigurator.apply(defaultConfigs.withKD(updatedValue));
                 });
             }
@@ -52,16 +53,16 @@ public class MotorTuner extends DogLog{
                 Talon.tunablePID(motorName, motor, defaultConfigs);
     
                 TalonFXConfigurator motorConfigurator = motor.getConfigurator();
-                DogLog.tunable(motorName + "kG", defaultConfigs.kP, updatedValue -> {
+                DogLog.tunable(motorName + " kG", defaultConfigs.kP, updatedValue -> {
                     motorConfigurator.apply(defaultConfigs.withKG(updatedValue));
                 });
-                DogLog.tunable(motorName + "kS", defaultConfigs.kS, updatedValue -> {
+                DogLog.tunable(motorName + " kS", defaultConfigs.kS, updatedValue -> {
                     motorConfigurator.apply(defaultConfigs.withKS(updatedValue));
                 });
-                DogLog.tunable(motorName + "kV", defaultConfigs.kV, updatedValue -> {
+                DogLog.tunable(motorName + " kV", defaultConfigs.kV, updatedValue -> {
                     motorConfigurator.apply(defaultConfigs.withKV(updatedValue));
                 });
-                DogLog.tunable(motorName + "kA", defaultConfigs.kA, updatedValue -> {
+                DogLog.tunable(motorName + " kA", defaultConfigs.kA, updatedValue -> {
                     motorConfigurator.apply(defaultConfigs.withKA(updatedValue));
                 });
             }
@@ -107,6 +108,16 @@ public class MotorTuner extends DogLog{
          * Note: WPIlib feedforward can't be adjusted so you need to run a sysID routine to tune those values
          */
         public static void tunablePID(String motorName, PIDController controller){
+            if(isTestMode.getAsBoolean()){
+                DogLog.tunable(motorName + " kP", controller.getP(), updatedValue -> controller.setP(updatedValue));
+                DogLog.tunable(motorName + " kI", controller.getI(), updatedValue -> controller.setI(updatedValue));
+                DogLog.tunable(motorName + " kD", controller.getD(), updatedValue -> controller.setD(updatedValue));
+            }
+        }
+        /*
+         * Overloaded method to accept ProfiledPIDController aswell
+         */
+        public static void tunablePID(String motorName, ProfiledPIDController controller){
             if(isTestMode.getAsBoolean()){
                 DogLog.tunable(motorName + " kP", controller.getP(), updatedValue -> controller.setP(updatedValue));
                 DogLog.tunable(motorName + " kI", controller.getI(), updatedValue -> controller.setI(updatedValue));
