@@ -4,12 +4,14 @@
 
 package frc.robot;
 
+import dev.doglog.DogLog;
 import frc.robot.subsystems.ExampleSubsystem;
 
 public class RobotContainer {
     private ExampleSubsystem subsystem = new ExampleSubsystem();
     public RobotContainer() {
         configureBindings();
+        DogLog.setEnabled(false);
     }
 
     private void configureBindings() {}
