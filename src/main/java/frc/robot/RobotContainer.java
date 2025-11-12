@@ -12,6 +12,8 @@ public class RobotContainer {
     public RobotContainer() {
         configureBindings();
         DogLog.setEnabled(false);
+        //this requires all tuning to be done in test mode
+        MotorTuner.requireTestMode();
     }
 
     private void configureBindings() {}
