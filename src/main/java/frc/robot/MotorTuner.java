@@ -13,6 +13,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.RobotState;
 /*
  * Publishes values for tuning PID via DogLog
@@ -107,6 +108,7 @@ public class MotorTuner extends DogLog{
             DogLog.tunable(motorName + " kP", controller.getP(), updatedValue -> controller.setP(updatedValue));
             DogLog.tunable(motorName + " kI", controller.getI(), updatedValue -> controller.setI(updatedValue));
             DogLog.tunable(motorName + " kD", controller.getD(), updatedValue -> controller.setD(updatedValue));
+            DogLog.tunable(motorName + " tolerance", controller.getErrorTolerance(), updatedValue -> controller.setTolerance(updatedValue));
         }
         /*
          * Overloaded method to accept ProfiledPIDController
@@ -115,6 +117,15 @@ public class MotorTuner extends DogLog{
             DogLog.tunable(motorName + " kP", controller.getP(), updatedValue -> controller.setP(updatedValue));
             DogLog.tunable(motorName + " kI", controller.getI(), updatedValue -> controller.setI(updatedValue));
             DogLog.tunable(motorName + " kD", controller.getD(), updatedValue -> controller.setD(updatedValue));
+            DogLog.tunable(motorName + " position tolerance", controller.getPositionTolerance(), updatedValue -> controller.setTolerance(updatedValue));
+            DogLog.tunable(motorName + " MaxVelocity", controller.getConstraints().maxVelocity, 
+                updatedValue -> controller.setConstraints(
+                    new Constraints(updatedValue, controller.getConstraints().maxAcceleration))
+            );
+            DogLog.tunable(motorName + " MaxAcceleration", controller.getConstraints().maxAcceleration, 
+                updatedValue -> controller.setConstraints(
+                    new Constraints(controller.getConstraints().maxAcceleration, updatedValue))
+            );
         }
     }
 }
