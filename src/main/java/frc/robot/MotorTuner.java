@@ -1,5 +1,8 @@
 package frc.robot;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -11,8 +14,11 @@ import com.revrobotics.spark.config.ClosedLoopConfigAccessor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import dev.doglog.DogLog;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.RobotState;
 /*
@@ -120,12 +126,97 @@ public class MotorTuner extends DogLog{
             DogLog.tunable(motorName + " position tolerance", controller.getPositionTolerance(), updatedValue -> controller.setTolerance(updatedValue));
             DogLog.tunable(motorName + " MaxVelocity", controller.getConstraints().maxVelocity, 
                 updatedValue -> controller.setConstraints(
-                    new Constraints(updatedValue, controller.getConstraints().maxAcceleration))
+                    new Constraints(updatedValue, controller.getConstraints().maxAcceleration)
+                )
             );
             DogLog.tunable(motorName + " MaxAcceleration", controller.getConstraints().maxAcceleration, 
                 updatedValue -> controller.setConstraints(
-                    new Constraints(controller.getConstraints().maxAcceleration, updatedValue))
+                    new Constraints(controller.getConstraints().maxAcceleration, updatedValue)
+                )
             );
+        }
+        /*
+         * Take in suppliers because WPILIB feedforward objects can't be changed after initialization
+         * We get around this by reassigning the variable storing the feedforward with a new object with updated values
+         * This is specifically accomplished via suppliers to supply data about the current values of a feedforward
+         * and consumers to modify the variable storing the feedforwards with updated values
+         * NOTE: Feedforward variables cannot be final otherwise we cannot reassign them. 
+         * ALSO: It is highly recommended to only use this initially for finding feedforwards manually. Then, set your variables to final to prevent them from being being reassigned.
+         */
+        public static void tunableMotorFeedforward(String motorName, Supplier<SimpleMotorFeedforward> feedforwardSupplier, Consumer<SimpleMotorFeedforward> feedforwardModifier){
+            DogLog.tunable(motorName + " kS", feedforwardSupplier.get().getKs(), updatedValue -> feedforwardModifier.accept(new SimpleMotorFeedforward(
+                updatedValue, 
+                feedforwardSupplier.get().getKv(),
+                feedforwardSupplier.get().getKa()
+            )));
+            DogLog.tunable(motorName + " kV", feedforwardSupplier.get().getKv(), updatedValue -> feedforwardModifier.accept(new SimpleMotorFeedforward(
+                feedforwardSupplier.get().getKs(),
+                updatedValue,
+                feedforwardSupplier.get().getKa()
+            )));
+            DogLog.tunable(motorName + " kA", feedforwardSupplier.get().getKa(), updatedValue -> feedforwardModifier.accept(new SimpleMotorFeedforward(
+                feedforwardSupplier.get().getKs(),
+                feedforwardSupplier.get().getKv(),
+                updatedValue
+            )));
+        }
+        /*
+         * Tunes an elevator feedforward with kS, kG, kV, kA
+         */
+        public static void tunableElevatorFeedforward(String motorName, Supplier<ElevatorFeedforward> feedforwardSupplier, Consumer<ElevatorFeedforward> feedforwardModifier){
+            DogLog.tunable(motorName + " kS", feedforwardSupplier.get().getKs(), updatedValue -> feedforwardModifier.accept(new ElevatorFeedforward(
+                updatedValue, 
+                feedforwardSupplier.get().getKg(),
+                feedforwardSupplier.get().getKv(),
+                feedforwardSupplier.get().getKa()
+            )));
+            DogLog.tunable(motorName + " kG", feedforwardSupplier.get().getKg(), updatedValue -> feedforwardModifier.accept(new ElevatorFeedforward(
+                feedforwardSupplier.get().getKs(),
+                updatedValue, 
+                feedforwardSupplier.get().getKv(),
+                feedforwardSupplier.get().getKa()
+            )));
+            DogLog.tunable(motorName + " kV", feedforwardSupplier.get().getKv(), updatedValue -> feedforwardModifier.accept(new ElevatorFeedforward(
+                feedforwardSupplier.get().getKs(),
+                feedforwardSupplier.get().getKg(),
+                updatedValue, 
+                feedforwardSupplier.get().getKa()
+            )));
+            DogLog.tunable(motorName + " kA", feedforwardSupplier.get().getKa(), updatedValue -> feedforwardModifier.accept(new ElevatorFeedforward(
+                feedforwardSupplier.get().getKs(),
+                feedforwardSupplier.get().getKg(),
+                feedforwardSupplier.get().getKv(),
+                updatedValue
+            )));
+        }
+        /*
+         * Tunes an arm feedforward with kS, kG, kV, kA
+         */
+        public static void tunableArmFeedforward(String motorName, Supplier<ArmFeedforward> feedforwardSupplier, Consumer<ArmFeedforward> feedforwardModifier){
+            DogLog.tunable(motorName + " kS", feedforwardSupplier.get().getKs(), updatedValue -> feedforwardModifier.accept(new ArmFeedforward(
+                updatedValue, 
+                feedforwardSupplier.get().getKg(),
+                feedforwardSupplier.get().getKv(),
+                feedforwardSupplier.get().getKa()
+            )));
+            DogLog.tunable(motorName + " kG", feedforwardSupplier.get().getKg(), updatedValue -> feedforwardModifier.accept(new ArmFeedforward(
+                feedforwardSupplier.get().getKs(),
+                updatedValue, 
+                feedforwardSupplier.get().getKv(),
+                feedforwardSupplier.get().getKa()
+            )));
+            DogLog.tunable(motorName + " kV", feedforwardSupplier.get().getKv(), updatedValue -> feedforwardModifier.accept(new ArmFeedforward(
+                feedforwardSupplier.get().getKs(),
+                feedforwardSupplier.get().getKg(),
+                updatedValue, 
+                feedforwardSupplier.get().getKa()
+            )));
+            DogLog.tunable(motorName + " kA", feedforwardSupplier.get().getKa(), updatedValue -> feedforwardModifier.accept(new ArmFeedforward(
+                feedforwardSupplier.get().getKs(),
+                feedforwardSupplier.get().getKg(),
+                feedforwardSupplier.get().getKv(),
+                updatedValue
+            )));
         }
     }
 }
