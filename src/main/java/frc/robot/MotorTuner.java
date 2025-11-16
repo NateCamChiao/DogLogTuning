@@ -134,7 +134,7 @@ public class MotorTuner extends DogLog{
             );
             DogLog.tunable(motorName + " MaxAcceleration", controller.getConstraints().maxAcceleration, 
                 updatedValue -> controller.setConstraints(
-                    new Constraints(controller.getConstraints().maxAcceleration, updatedValue)
+                    new Constraints(controller.getConstraints().maxVelocity, updatedValue)
                 )
             );
         }
