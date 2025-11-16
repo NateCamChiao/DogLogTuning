@@ -106,9 +106,12 @@ public class MotorTuner extends DogLog{
             });
         }
     }
+    /*
+     * "Native" is referring to WPILib controllers
+     */
     public static class NativeController{
         /*
-         * Note: WPIlib feedforward can't be adjusted so you need to run a sysID routine to tune those values
+         * Note: WPILib feedforward can't be adjusted so you need to run a sysID routine to tune those values
          */
         public static void tunablePID(String motorName, PIDController controller){
             DogLog.tunable(motorName + " kP", controller.getP(), updatedValue -> controller.setP(updatedValue));
@@ -136,7 +139,7 @@ public class MotorTuner extends DogLog{
             );
         }
         /*
-         * Take in suppliers because WPILIB feedforward objects can't be changed after initialization
+         * Take in suppliers because WPILib feedforward objects can't be changed after initialization
          * We get around this by reassigning the variable storing the feedforward with a new object with updated values
          * This is specifically accomplished via suppliers to supply data about the current values of a feedforward
          * and consumers to modify the variable storing the feedforwards with updated values
