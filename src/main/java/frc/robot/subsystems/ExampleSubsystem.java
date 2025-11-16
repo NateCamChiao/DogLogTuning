@@ -6,6 +6,8 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import dev.doglog.DogLog;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -19,16 +21,16 @@ public class ExampleSubsystem extends SubsystemBase{
     private SparkMax sparkMaxMotor = new SparkMax(0, MotorType.kBrushless);
     private ProfiledPIDController profiledPIDController = new ProfiledPIDController(0, 0, 0, new Constraints(0, 0));
     private PIDController nativePIDController = new PIDController(0, 0, 0);
-    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0);
+    private SimpleMotorFeedforward motorFeedforward = new SimpleMotorFeedforward(0, 0);
+    private ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 0, 0);
+    private ArmFeedforward armFeedforward = new ArmFeedforward(0, 0, 0);
+    
     public ExampleSubsystem(){
-        DogLog.log("Feedfowrad s", feedforward.getKs());
 
-        feedforward = new SimpleMotorFeedforward(1, 0);
-        DogLog.log("Feedfowrad s2", feedforward.getKs());
     }
     //Method in subsystem to 
     public void tuneMotors(){
-        //talonFX examples
+        //TalonFX examples
         MotorTuner.TalonMotor.tunablePID("Intake motor", intakeMotor, new Slot0Configs());
         MotorTuner.TalonMotor.tunablePIDFeedforward("Intake Arm Motor", armMotor, new Slot0Configs());
         //SparkMax example
@@ -36,5 +38,18 @@ public class ExampleSubsystem extends SubsystemBase{
         //Native controller examples
         MotorTuner.NativeController.tunablePID("Native PID", nativePIDController);
         MotorTuner.NativeController.tunablePID("Native ProfiledPID", profiledPIDController);
+        //Native Feedforwards
+        MotorTuner.NativeController.tunableMotorFeedforward("Native Motor Feedforward", 
+            () -> this.motorFeedforward, // Supplies feedforward
+            updatedFeedforward -> this.motorFeedforward = updatedFeedforward // Allows modification of variable "motorFeedforward"
+        );
+        MotorTuner.NativeController.tunableArmFeedforward("Native Arm Feedforward", 
+            () -> this.armFeedforward, // Supplies feedforward
+            updatedFeedforward -> this.armFeedforward = updatedFeedforward // Allows modification of variable "armFeedforward"
+        );
+        MotorTuner.NativeController.tunableElevatorFeedforward("Native Elevator Feedforward", 
+            () -> this.elevatorFeedforward, // Supplies feedforward
+            updatedFeedforward -> this.elevatorFeedforward = updatedFeedforward // Allows modification of variable "elevatorFeedforward"
+        );
     }
 }
