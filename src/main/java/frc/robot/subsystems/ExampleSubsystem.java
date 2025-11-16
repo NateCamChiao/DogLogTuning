@@ -5,8 +5,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.MotorTuner;
 
@@ -14,10 +17,14 @@ public class ExampleSubsystem extends SubsystemBase{
     private TalonFX intakeMotor = new TalonFX(1);
     private TalonFX armMotor = new TalonFX(1);
     private SparkMax sparkMaxMotor = new SparkMax(0, MotorType.kBrushless);
-    private ProfiledPIDController profiledPIDController = new ProfiledPIDController(0, 0, 0, null);
+    private ProfiledPIDController profiledPIDController = new ProfiledPIDController(0, 0, 0, new Constraints(0, 0));
     private PIDController nativePIDController = new PIDController(0, 0, 0);
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0);
     public ExampleSubsystem(){
+        DogLog.log("Feedfowrad s", feedforward.getKs());
 
+        feedforward = new SimpleMotorFeedforward(1, 0);
+        DogLog.log("Feedfowrad s2", feedforward.getKs());
     }
     //Method in subsystem to 
     public void tuneMotors(){
